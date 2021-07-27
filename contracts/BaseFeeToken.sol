@@ -45,7 +45,7 @@ contract BaseFeeToken is
 
 	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-	function mint(address _to, uint256 _amount) public override {
+	function mint(address _to, uint256 _amount) public {
 		require(
 			hasRole(MINTER_ROLE, _msgSender()),
 			"BFT: must have minter role to mint"

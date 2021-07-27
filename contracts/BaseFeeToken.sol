@@ -42,5 +42,7 @@ contract BaseFeeToken is
 		returns (bool) {
 		return super.supportsInterface(interfaceId);
 	}
+
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 }
 

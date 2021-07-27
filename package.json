@@ -10,6 +10,7 @@
     "@openzeppelin/contracts-upgradeable": "^4.2.0"
   },
   "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.12",
     "truffle": "^5.4.2"
   },
   "scripts": {

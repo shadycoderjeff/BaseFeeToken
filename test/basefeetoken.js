@@ -18,3 +18,13 @@ contract("BaseFeeToken: supportsInterface", accounts => {
 	});
 });
 
+contract("BaseFeeToken: initialize", accounts => {
+	it("should initialize properly", async () => {
+		let bft = await BaseFeeToken.deployed();
+		await bft.initialize("BaseFeeToken", "BFT", accounts[5]);
+		assert.equal(await bft.name(), "BaseFeeToken");
+		assert.equal(await bft.symbol(), "BFT");
+		assert.isTrue(await bft.hasRole("0x0000000000000000000000000000000000000000000000000000000000000000", accounts[5]));
+	});
+});
+

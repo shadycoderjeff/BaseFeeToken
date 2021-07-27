@@ -17,3 +17,4 @@ contract("BaseFeeToken: supportsInterface", accounts => {
 		assert.isTrue(await bft.supportsInterface("0x7965db0b"));
 	});
 });
+

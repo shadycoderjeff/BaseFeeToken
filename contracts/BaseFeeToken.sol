@@ -36,13 +36,21 @@ contract BaseFeeToken is
 		_setupRole(DEFAULT_ADMIN_ROLE, _admin);
 	}
 
-	function supportsInterface(bytes4 interfaceId)
+	function supportsInterface(bytes4 _interfaceId)
 		public view
 		override (IERC165Upgradeable, ERC165Upgradeable, AccessControlUpgradeable)
 		returns (bool) {
-		return super.supportsInterface(interfaceId);
+		return super.supportsInterface(_interfaceId);
 	}
 
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+
+	function mint(address _to, uint256 _amount) public override {
+		require(
+			hasRole(MINTER_ROLE, _msgSender()),
+			"BFT: must have minter role to mint"
+		);
+		_mint(_to, _amount);
+	}
 }
 

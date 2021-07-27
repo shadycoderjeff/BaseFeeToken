@@ -1,0 +1,19 @@
+{
+  "name": "basefeetoken",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.2.0",
+    "@openzeppelin/contracts-upgradeable": "^4.2.0"
+  },
+  "devDependencies": {
+    "truffle": "^5.4.2"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "license": "MIT"
+}

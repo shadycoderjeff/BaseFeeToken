@@ -7,7 +7,7 @@ import "./BaseFeeToken.sol";
 
 contract Vault is Initializable {
 	BaseFeeToken public token;
-	uint cPercent;
+	uint64 cPercent;
 
 	struct Stash {
 		uint cBalance;
@@ -16,6 +16,9 @@ contract Vault is Initializable {
 	}
 	uint stashId;
 	mapping(uint => Stash) stashes;
+
+
+	event StashCreated(address indexed owner, uint cBalance, uint tokenBalance);
 
 
 	function initialize(
@@ -39,6 +42,8 @@ contract Vault is Initializable {
 		stash.owner = msg.sender;
 
 		token.mint(msg.sender, _numTokens);
+
+		emit StashCreated(msg.sender, msg.value, _numtokens);
 	}
 }
 

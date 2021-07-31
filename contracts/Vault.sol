@@ -18,9 +18,17 @@ contract Vault is Initializable {
 	mapping(uint => Stash) stashes;
 
 
-	event StashCreated(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
-	event StashClosed(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
-	event StashLiquidated(uint indexed stashId, address indexed liquidator, address indexed owner, uint cBalance, uint tokenBalance);
+	event StashCreated(
+		uint indexed stashId,
+		address indexed owner,
+		uint cBalance,
+		uint tokenBalance
+	);
+	event StashClosed(uint indexed stashId);
+	event StashLiquidated(
+		uint indexed stashId,
+		address indexed liquidator
+	);
 
 
 	function initialize(
@@ -62,7 +70,7 @@ contract Vault is Initializable {
 
 		delete stashes[_stashId];
 
-		emit StashClosed(_stashId, msg.sender, _cBalance, _tokenBalance);
+		emit StashClosed(_stashId);
 	}
 
 	function liquidate(uint _stashId) public {
@@ -81,8 +89,7 @@ contract Vault is Initializable {
 
 		delete stashes[_stashId];
 
-		address _owner = stashes[_stashId].owner;
-		emit StashLiquidated(_stashId, msg.sender, _owner, _cBalance, _tokenBalance);
+		emit StashLiquidated(_stashId, msg.sender);
 	}
 }
 

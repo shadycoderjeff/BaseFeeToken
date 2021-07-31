@@ -24,6 +24,7 @@ contract Vault is Initializable {
 		uint cBalance,
 		uint tokenBalance
 	);
+	event StashCollateralAdded(uint indexed stashId, uint amount);
 	event StashClosed(uint indexed stashId);
 	event StashLiquidated(
 		uint indexed stashId,
@@ -55,6 +56,15 @@ contract Vault is Initializable {
 		token.mint(msg.sender, _numTokens);
 
 		emit StashCreated(_stashId, msg.sender, msg.value, _numTokens);
+	}
+
+	function addCollateral(uint _stashId) public payable {
+		uint _prevBalance = stashes[_stashId].cBalance;
+		uint _newBalance = _prevBalance + msg.value;
+
+		stashes[_stashId].cBalance = _newBalance;
+
+		emit StashCollateralAdded(_stashId, msg.value);
 	}
 
 	function close(uint _stashId) public {

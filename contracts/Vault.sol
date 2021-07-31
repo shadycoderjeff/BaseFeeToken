@@ -19,11 +19,12 @@ contract Vault is Initializable {
 
 
 	event StashCreated(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
+	event StashClosed(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
 
 
 	function initialize(
 		BaseFeeToken _token,
-		uint _cPercent
+		uint64 _cPercent
 	) public initializer {
 		token = _token;
 		cPercent = _cPercent;
@@ -44,7 +45,22 @@ contract Vault is Initializable {
 
 		token.mint(msg.sender, _numTokens);
 
-		emit StashCreated(_stashId, msg.sender, msg.value, _numtokens);
+		emit StashCreated(_stashId, msg.sender, msg.value, _numTokens);
+	}
+
+	function close(uint _stashId) public {
+		address _owner = stashes[_stashId].owner;
+		require(_owner == msg.sender);
+
+		uint _tokenBalance = stashes[_stashId].tokenBalance;
+		uint _cBalance = stashes[_stashId].cBalance;
+
+		token.burnFrom(msg.sender, _tokenBalance);
+		payable(msg.sender).transfer(_cBalance);
+
+		delete stashes[_stashId];
+
+		emit StashClosed(_stashId, msg.sender, _cBalance, _tokenBalance);
 	}
 }
 

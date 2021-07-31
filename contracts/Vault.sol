@@ -26,6 +26,8 @@ contract Vault is Initializable {
 	);
 	event StashCollateralAdded(uint indexed stashId, uint amount);
 	event StashCollateralRemoved(uint indexed stashId, uint amount);
+	event StashTokensMinted(uint indexed stashId, uint amount);
+	event StashTokensBurned(uint indexed stashId, uint amount);
 	event StashClosed(uint indexed stashId);
 	event StashLiquidated(
 		uint indexed stashId,
@@ -89,6 +91,39 @@ contract Vault is Initializable {
 		payable(msg.sender).transfer(_amount);
 
 		emit StashCollateralRemoved(_stashId, _amount);
+	}
+
+	function mintTokens(uint _stashId, uint _amount) public {
+		address _owner = stashes[_stashId].owner;
+		require(_owner == msg.sender);
+
+		uint _prevBalance = stashes[_stashId].tokenBalance;
+		uint _newBalance = _prevBalance + _amount;
+
+		// TODO: Replace with BASEFEE when it is available
+		uint _basefee = 1 gwei;
+		uint _cBalance = stashes[_stashId].cBalance;
+		uint _maxTokens = _cBalance * 100 / _basefee / cPercent;
+
+		require(_newBalance <= _maxTokens);
+
+		stashes[_stashId].tokenBalance = _newBalance;
+		token.mint(msg.sender, _amount);
+
+		emit StashTokensMinted(_stashId, _amount);
+	}
+
+	function burnTokens(uint _stashId, uint _amount) public {
+		address _owner = stashes[_stashId].owner;
+		require(_owner == msg.sender);
+
+		uint _prevBalance = stashes[_stashId].tokenBalance;
+		uint _newBalance = _prevBalance - _amount;
+
+		stashes[_stashId].tokenBalance = _newBalance;
+		token.burnFrom(msg.sender, _amount);
+
+		emit StashTokensBurned(_stashId, _amount);
 	}
 
 	function close(uint _stashId) public {

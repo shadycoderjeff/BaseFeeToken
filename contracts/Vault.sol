@@ -57,6 +57,7 @@ contract Vault is Initializable {
 		uint _cBalance = stashes[_stashId].cBalance;
 
 		token.burnFrom(msg.sender, _tokenBalance);
+		// TODO: Add backstop fee
 		payable(msg.sender).transfer(_cBalance);
 
 		delete stashes[_stashId];
@@ -75,6 +76,7 @@ contract Vault is Initializable {
 
 		// TODO: Replace with auction
 		token.burnFrom(msg.sender, _tokenBalance);
+		// TODO: Add backstop fee
 		payable(msg.sender).transfer(_cBalance);
 
 		delete stashes[_stashId];

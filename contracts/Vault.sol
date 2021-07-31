@@ -18,7 +18,7 @@ contract Vault is Initializable {
 	mapping(uint => Stash) stashes;
 
 
-	event StashCreated(address indexed owner, uint cBalance, uint tokenBalance);
+	event StashCreated(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
 
 
 	function initialize(
@@ -36,14 +36,15 @@ contract Vault is Initializable {
 
 		require(_numTokens <= _maxTokens);
 
-		Stash storage stash = stashes[stashId++];
+		uint _stashId = stashId++;
+		Stash storage stash = stashes[_stashId];
 		stash.cBalance = msg.value;
 		stash.tokenBalance = _numTokens;
 		stash.owner = msg.sender;
 
 		token.mint(msg.sender, _numTokens);
 
-		emit StashCreated(msg.sender, msg.value, _numtokens);
+		emit StashCreated(_stashId, msg.sender, msg.value, _numtokens);
 	}
 }
 

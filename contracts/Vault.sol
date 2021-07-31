@@ -25,6 +25,7 @@ contract Vault is Initializable {
 		uint tokenBalance
 	);
 	event StashCollateralAdded(uint indexed stashId, uint amount);
+	event StashCollateralRemoved(uint indexed stashId, uint amount);
 	event StashClosed(uint indexed stashId);
 	event StashLiquidated(
 		uint indexed stashId,
@@ -59,12 +60,35 @@ contract Vault is Initializable {
 	}
 
 	function addCollateral(uint _stashId) public payable {
+		address _owner = stashes[_stashId].owner;
+		require(_owner == msg.sender);
+
 		uint _prevBalance = stashes[_stashId].cBalance;
 		uint _newBalance = _prevBalance + msg.value;
 
 		stashes[_stashId].cBalance = _newBalance;
 
 		emit StashCollateralAdded(_stashId, msg.value);
+	}
+
+	function removeCollateral(uint _stashId, uint _amount) public {
+		address _owner = stashes[_stashId].owner;
+		require(_owner == msg.sender);
+
+		uint _prevBalance = stashes[_stashId].cBalance;
+		uint _newBalance = _prevBalance - _amount;
+
+		// TODO: Replace with BASEFEE when it is available
+		uint _basefee = 1 gwei;
+		uint _tokenBalance = stashes[_stashId].tokenBalance;
+		uint _maxTokens = _newBalance * 100 / _basefee / cPercent;
+
+		require(_tokenBalance <= _maxTokens);
+
+		stashes[_stashId].cBalance = _newBalance;
+		payable(msg.sender).transfer(_amount);
+
+		emit StashCollateralRemoved(_stashId, _amount);
 	}
 
 	function close(uint _stashId) public {

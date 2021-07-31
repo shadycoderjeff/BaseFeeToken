@@ -20,6 +20,7 @@ contract Vault is Initializable {
 
 	event StashCreated(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
 	event StashClosed(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
+	event StashLiquidated(uint indexed stashId, address indexed liquidator, address indexed owner, uint cBalance, uint tokenBalance);
 
 
 	function initialize(
@@ -61,6 +62,25 @@ contract Vault is Initializable {
 		delete stashes[_stashId];
 
 		emit StashClosed(_stashId, msg.sender, _cBalance, _tokenBalance);
+	}
+
+	function liquidate(uint _stashId) public {
+		// TODO: Replace with BASEFEE when it is available
+		uint _basefee = 1 gwei;
+		uint _tokenBalance = stashes[_stashId].tokenBalance;
+		uint _cBalance = stashes[_stashId].cBalance;
+		uint _maxTokens = _cBalance * 100 / _basefee / cPercent;
+
+		require(_tokenBalance > _maxTokens);
+
+		// TODO: Replace with auction
+		token.burnFrom(msg.sender, _tokenBalance);
+		payable(msg.sender).transfer(_cBalance);
+
+		delete stashes[_stashId];
+
+		address _owner = stashes[_stashId].owner;
+		emit StashLiquidated(_stashId, msg.sender, _owner, _cBalance, _tokenBalance);
 	}
 }
 

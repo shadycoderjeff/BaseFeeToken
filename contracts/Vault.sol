@@ -88,6 +88,8 @@ contract Vault is Initializable {
 		require(_tokenBalance <= _maxTokens);
 
 		stashes[_stashId].cBalance = _newBalance;
+		// TODO: Maybe add backstop fee?
+		// Otherwise, owner can bypass the fee by slowly burning tokens and removing collateral
 		payable(msg.sender).transfer(_amount);
 
 		emit StashCollateralRemoved(_stashId, _amount);

@@ -18,21 +18,13 @@ contract Vault is Initializable {
 	mapping(uint => Stash) stashes;
 
 
-	event StashCreated(
-		uint indexed stashId,
-		address indexed owner,
-		uint cBalance,
-		uint tokenBalance
-	);
+	event StashCreated(uint indexed stashId, address indexed owner, uint cBalance, uint tokenBalance);
 	event StashCollateralAdded(uint indexed stashId, uint amount);
 	event StashCollateralRemoved(uint indexed stashId, uint amount);
 	event StashTokensMinted(uint indexed stashId, uint amount);
 	event StashTokensBurned(uint indexed stashId, uint amount);
 	event StashClosed(uint indexed stashId);
-	event StashLiquidated(
-		uint indexed stashId,
-		address indexed liquidator
-	);
+	event StashLiquidated(uint indexed stashId, address indexed liquidator);
 
 
 	function initialize(
